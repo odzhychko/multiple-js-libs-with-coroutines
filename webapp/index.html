@@ -1,0 +1,26 @@
+<h1>multiple-js-libs-with-coroutines</h1>
+
+<script src="../lib1/build/distributions/lib1.js"></script>
+<script src="../lib2/build/distributions/lib2.js"></script>
+
+<script>
+    let dispatcher = undefined
+    Object.defineProperty(window, "coroutineDispatcher", {
+        get() {
+            console.log("accessing coroutineDispatcher")
+            return dispatcher
+        },
+        set(value) {
+            console.log("setting coroutineDispatcher:")
+            console.log(value)
+            dispatcher = value
+        }
+    })
+    // Just running lib1 or just running lib2 works.
+    // The first called lib always works.
+    // The problem is, that lib2 tries to use
+    // the `window.coroutineDispatcher` created by lib1.
+    // This fails, because the methods got different minified names.
+    lib1.Lib1.runInBackground()
+    lib2.Lib2.runInBackground()
+</script>
